@@ -15,7 +15,7 @@ import sys
 from UR10 import UR10
 
 
-def test(path, alg='PPO', space='sphere', evals_num=20, complex_env=True, force=0.1, pos_range=0.5, max_steps=500):
+def test(path, alg='PPO', space='sphere', distance_threshold=0.15, evals_num=20, complex_env=True, force=0.1, pos_range=0.5, max_steps=500):
     if complex_env:
         angle_control=True
         complex_obs_space=True
@@ -28,7 +28,7 @@ def test(path, alg='PPO', space='sphere', evals_num=20, complex_env=True, force=
     env_test = FlattenObservation(UR10(
             is_dense=False, is_train=True, is_fixed=False, angle_control=angle_control, 
             force=force,  complex_obs_space=complex_obs_space, pos_range=pos_range, 
-            max_steps=max_steps, space=space
+            max_steps=max_steps, space=space, distance_threshold=distance_threshold
         ))
     
     if alg.upper() == 'PPO':
@@ -42,7 +42,7 @@ def test(path, alg='PPO', space='sphere', evals_num=20, complex_env=True, force=
     print('Mean episode length:', np.mean(np.array(res)))
     
 
-def train(alg='PPO', space='sphere', complex_env=True, frames=2000000, max_steps=500, force=0.1, pos_range=0.5, path=None):
+def train(alg='PPO', space='sphere', distance_threshold=0.15, complex_env=True, frames=2000000, max_steps=500, force=0.1, pos_range=0.5, path=None):
     if complex_env:
         angle_control=True
         complex_obs_space=True
@@ -62,7 +62,7 @@ def train(alg='PPO', space='sphere', complex_env=True, frames=2000000, max_steps
     eval_env = FlattenObservation(UR10(
         is_dense=False, is_train=True, is_fixed=False, angle_control=angle_control,
         force=force, complex_obs_space=complex_obs_space, 
-        max_steps=max_steps, pos_range=pos_range
+        max_steps=max_steps, pos_range=pos_range, distance_threshold=distance_threshold
     ))
     
     stop_train_callback = StopTrainingOnNoModelImprovement(max_no_improvement_evals=50, min_evals=200, verbose=1)
@@ -111,13 +111,15 @@ def main():
     parser.add_argument("-e", "--max_steps", default=500, type=int, help="max steps in episode")
     parser.add_argument("-f", "--force", default=0.1, type=float, help="force of actions")
     parser.add_argument("-r", "--pos_range", default=0.5, type=float, help="pos range for sphere")
+    parser.add_argument("-t", "--dist_threshold", default=0.15, type=float, help="distance threshold")
     
     args = parser.parse_args(sys.argv[1:])
     
     if args.train:
         train(
             alg=args.model, 
-            space=args.space, 
+            space=args.space,
+            distance_threshold=args.dist_threshold,
             complex_env=args.complex,
             frames=args.frames,
             max_steps=args.max_steps,
@@ -129,6 +131,7 @@ def main():
         test(
             path=args.path,
             alg=args.model,
+            distance_threshold=args.dist_threshold,
             space=args.space,
             evals_num=args.evals,
             complex_env=args.complex,

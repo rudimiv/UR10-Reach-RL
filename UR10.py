@@ -26,7 +26,7 @@ from IPython.display import display
 class UR10(gym.Env):
     
 
-    def __init__(self, is_train, is_dense=True, angle_control=False, is_fixed=False, 
+    def __init__(self, is_train=True, distance_threshold=0.15, is_dense=True, angle_control=False, is_fixed=False, 
                  force=0.05, complex_obs_space=False, complex_reward=False, pos_range=0.5,
                  max_steps=500, space='cube'):
         if complex_obs_space:
@@ -55,7 +55,7 @@ class UR10(gym.Env):
         pybullet.setAdditionalSearchPath(pybullet_data.getDataPath())
 
         self.is_dense = is_dense
-        self.distance_threshold = 0.05
+        self.distance_threshold = distance_threshold
 
         self.planeId = None
         self.robot = None
