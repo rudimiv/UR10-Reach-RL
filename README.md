@@ -18,9 +18,14 @@ The code for working with the Pybullet environment is based on https://github.co
 
 # How to run
 
-For train: main.py --train --space cube -m ddpg
-For test: main.py --test -p './models/best_model-ddpg-6-cube-099.zip' --space cube --model ddpg --evals 100
+* For train: main.py --train --space cube -m ddpg
+* For test: main.py --test -p './models/best_model-ddpg-6-cube-099.zip' --space cube --model ddpg --evals 100 -t 0.1
 
+# Provided models
+
+* models/best_model-ddpg-6-cube-099.zip - DDPG-based model trained for the complex cube environment. For the 0.1 threshold success rate is about 1.0 (For test: 
+main.py --test -p './models/best_model-ddpg-6-cube-099.zip' --space cube --model ddpg --evals 100 -t 0.1 )
+* models/best_model-ddpg-2-1m07sr.zip - DDPG-based model trained for the complex sphere environment. For the 0.15 threshold success rate is about 0.7 (For test: python3 main.py --test -p './models/best_model-ddpg-2-1m07sr.zip' --space sphere --model ddpg --evals 100 -t 0.15 --max_steps 1000)
 
 # Useful articles
 1.	Guo Z. et al. A reinforcement learning approach for inverse kinematics of arm robot //Proceedings of the 2019 4th International Conference on Robotics, Control and Automation. – 2019. – С. 95-99.
